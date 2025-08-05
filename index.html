@@ -1,89 +1,345 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎁 Free Robux Giveaway! 🎁</title>
+    <title>Offline Donation</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f8ff;
-            text-align: center;
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            max-width: 500px;
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            display: none;
         }
-        h1 {
-            color: #ff4500;
+        
+        .loading-spinner {
+            border: 5px solid #333333;
+            border-top: 5px solid #AAAAAA;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
-        input {
-            padding: 10px;
-            width: 80%;
-            margin: 10px 0;
-            border: 2px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            background-color: #ff4500;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #e03e00;
-        }
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
+        
+        .loading-text {
+            font-size: 24px;
+            color: #AAAAAA;
             font-weight: bold;
         }
-        .robux-icon {
-            font-size: 50px;
-            margin: 10px;
-            color: #ff4500;
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #555555, #333333);
+            color: #FFFFFF;
+            padding: 15px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(85, 85, 85, 0.3);
+            z-index: 1001;
+            display: none;
+            max-width: 80%;
+            text-align: center;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #252525;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #252525, #1A1A1A);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 2px solid #555555;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo-text {
+            font-size: 42px;
+            font-weight: bold;
+            color: #AAAAAA;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .group-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #555555, #333333);
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .group-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(85, 85, 85, 0.2);
+        }
+        
+        .giveaway-content {
+            padding: 30px;
+        }
+
+        .username-form {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #CCCCCC;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #333333;
+            background: #2A2A2A;
+            color: #FFFFFF;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #555555;
+            box-shadow: 0 0 0 2px rgba(85, 85, 85, 0.2);
+        }
+        
+        .robux-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .robux-option {
+            background: #2A2A2A;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #333333;
+        }
+        
+        .robux-option:hover {
+            transform: translateY(-5px);
+            background: #333333;
+            border-color: #555555;
+            box-shadow: 0 5px 15px rgba(85, 85, 85, 0.1);
+        }
+        
+        .robux-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #AAAAAA;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            background: linear-gradient(135deg, #555555, #333333);
+            color: #FFFFFF;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(85, 85, 85, 0.2);
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888888;
+            text-align: center;
+            line-height: 1.5;
+            padding: 0 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .robux-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .robux-options {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="robux-icon">🤑</div>
-        <h1>FREE ROBUX GIVEAWAY!</h1>
-        <p>Enter your Roblox username and click the button to claim your free Robux!</p>
-        
-        <input type="text" id="username" placeholder="Enter your Roblox username..." required>
-        <br>
-        <button onclick="generateRobux()">🎁 CLAIM FREE ROBUX! 🎁</button>
-        
-        <div id="result"></div>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing Transaction</div>
     </div>
 
+    <!-- Notification -->
+    <div class="notification" id="transactionNotification"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-text">Offline Donation</div>
+            </div>
+            <a href="#" class="group-link">GROUP LINK IN BIO</a>
+        </div>
+        
+        <div class="giveaway-content">
+            <div class="username-form">
+                <div class="form-group">
+                    <label for="username" class="form-label">Your Roblox Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username..." required>
+                </div>
+            </div>
+            
+            <h2 style="margin-bottom: 20px; color: #AAAAAA; text-align: center;">SELECT AMOUNT</h2>
+            
+            <div class="robux-options">
+                <div class="robux-option" onclick="selectAmount(100)">
+                    <div class="robux-amount">100</div>
+                </div>
+                
+                <div class="robux-option" onclick="selectAmount(500)">
+                    <div class="robux-amount">500</div>
+                </div>
+                
+                <div class="robux-option" onclick="selectAmount(1000)">
+                    <div class="robux-amount">1,000</div>
+                </div>
+                
+                <div class="robux-option" onclick="selectAmount(5000)">
+                    <div class="robux-amount">5,000</div>
+                </div>
+                
+                <div class="robux-option" onclick="selectAmount(10000)">
+                    <div class="robux-amount">10,000</div>
+                </div>
+                
+                <div class="robux-option" onclick="selectAmount(50000)">
+                    <div class="robux-amount">50,000</div>
+                </div>
+            </div>
+            
+            <button class="submit-btn" onclick="processTransaction()">SUBMIT</button>
+            
+            <div class="disclaimer">
+                *This is a community giveaway event. Participation does not guarantee rewards. Winners will be selected randomly. No purchase necessary. Must join our community group to be eligible.*
+            </div>
+        </div>
+    </div>
+    
     <script>
-        function generateRobux() {
-            const username = document.getElementById("username").value;
+        let selectedAmount = 0;
+        
+        function selectAmount(amount) {
+            selectedAmount = amount;
+            document.querySelectorAll('.robux-option').forEach(option => {
+                option.style.borderColor = '#333333';
+                option.style.background = '#2A2A2A';
+            });
+            event.currentTarget.style.borderColor = '#555555';
+            event.currentTarget.style.background = '#333333';
+        }
+        
+        function processTransaction() {
+            const username = document.getElementById('username').value;
+            
             if (!username) {
-                alert("Please enter a username!");
+                showNotification("Please enter your Roblox username!");
                 return;
             }
-
-            // Generate random Robux between 100 and 10,000
-            const robux = Math.floor(Math.random() * 9901) + 100;
             
-            // Display result
-            document.getElementById("result").innerHTML = `
-                <p>🎉 Congratulations, <strong>${username}</strong>! 🎉</p>
-                <p>You won: <strong style="color: #ff4500;">${robux.toLocaleString()} Robux!</strong></p>
-                <p>⚠️ This is just a simulation. No real Robux will be given.</p>
-            `;
+            if (selectedAmount === 0) {
+                showNotification("Please select an amount!");
+                return;
+            }
+            
+            // Show loading screen
+            document.querySelector('.loading-screen').style.display = 'flex';
+            
+            // Hide after 3 seconds and show notification
+            setTimeout(function() {
+                document.querySelector('.loading-screen').style.display = 'none';
+                showNotification(`Request submitted for ${selectedAmount.toLocaleString()} Robux!\nUsername: ${username}\nJoin my group to receive your donation.`);
+            }, 3000);
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('transactionNotification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
         }
     </script>
 </body>
